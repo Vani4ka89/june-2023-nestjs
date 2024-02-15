@@ -8,7 +8,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('JUNE-2023 API')
-    .setDescription('Users API description')
+    .setDescription('API description')
     .setVersion('1.0.0')
     .addBearerAuth({
       type: 'http',
