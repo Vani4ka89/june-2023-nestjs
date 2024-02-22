@@ -33,3 +33,8 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+/environments
+
+/june-2023-api-db
+/june-2023-api-s3
