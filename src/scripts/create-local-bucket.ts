@@ -1,22 +1,27 @@
 import { CreateBucketCommand, S3Client } from '@aws-sdk/client-s3';
+import { BucketCannedACL } from '@aws-sdk/client-s3/dist-types/models/models_0';
 import { Logger } from '@nestjs/common';
+import { config } from 'dotenv';
+import * as process from 'process';
+
+config({ path: './environments/.local.env' });
 
 const client = new S3Client({
   credentials: {
-    accessKeyId: 's3user',
-    secretAccessKey: 's3password',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
-  region: 'us-east-1',
-  endpoint: 'http://localhost:7001',
+  region: process.env.AWS_S3_REGION,
+  endpoint: process.env.AWS_S3_ENDPOINT,
   forcePathStyle: true,
 });
 
-async function foo() {
+async function createBucket() {
   try {
     await client.send(
       new CreateBucketCommand({
-        Bucket: 'http://localhost:7001/feb2024',
-        ACL: 'public-read',
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        ACL: process.env.AWS_S3_OBJECT_ACL as BucketCannedACL,
       }),
     );
     Logger.log('Bucket is created');
@@ -25,4 +30,4 @@ async function foo() {
   }
 }
 
-void foo();
+void createBucket();
