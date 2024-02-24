@@ -3,7 +3,6 @@ import * as path from 'node:path';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import * as process from 'process';
 
 import { Config, PostgresConfig } from '../../configs/config.type';
 
@@ -21,6 +20,9 @@ export class PostgresService implements TypeOrmOptionsFactory {
       database: postgresConfig.dbName,
       entities: [
         path.join(process.cwd(), 'dist', 'database', 'entities', '*.entity.js'),
+      ],
+      migrations: [
+        path.join(process.cwd(), 'dist', 'database', 'migrations', '*.js'),
       ],
       synchronize: true,
     };
