@@ -15,4 +15,7 @@ export class UserEntity extends BaseEntity {
 
   @Column('int', { nullable: true })
   age: number;
+
+  @Column('text')
+  title: string;
 }
