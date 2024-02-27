@@ -9,14 +9,17 @@ config({ path: './environments/.local.env' });
 
 const postgresConfig = getConfig().postgres;
 
+
+
 export default new DataSource({
-  type: 'postgres',
+               type: 'postgres',
   host: postgresConfig.host,
   port: postgresConfig.port,
-  username: postgresConfig.user,
+                 username: postgresConfig.user,
   password: postgresConfig.password,
-  database: postgresConfig.dbName,
+                   database: postgresConfig.dbName,
   entities: [
+
     path.join(process.cwd(), 'src', 'database', 'entities', '*.entity.ts'),
   ],
   migrations: [
