@@ -8,7 +8,6 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    PostgresModule,
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,

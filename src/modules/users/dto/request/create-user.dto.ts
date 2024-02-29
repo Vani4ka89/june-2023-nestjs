@@ -18,13 +18,13 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   @Length(3, 50)
-  @Transform(TransformHelper.trim())
+  @Transform(TransformHelper.trim)
   name?: string;
 
   @IsInt()
   @Min(16)
   @Max(100)
-  age: number;
+  bio: string;
 
   @IsString()
   @IsEmail()
