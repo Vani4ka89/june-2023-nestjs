@@ -1,6 +1,5 @@
 import { Transform, Type } from 'class-transformer';
 import {
-  IsDate,
   IsEmail,
   IsInt,
   IsOptional,
@@ -19,6 +18,7 @@ export class CreateUserDto {
   @IsString()
   @Length(3, 50)
   @Transform(TransformHelper.trim)
+  @Type(() => String)
   name?: string;
 
   @IsInt()
@@ -34,8 +34,4 @@ export class CreateUserDto {
   @IsString()
   @Matches(regexConstants.PASSWORD)
   password: string;
-
-  @IsDate()
-  @Type(() => Date)
-  date: Date;
 }
