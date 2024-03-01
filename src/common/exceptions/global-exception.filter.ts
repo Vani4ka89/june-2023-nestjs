@@ -26,7 +26,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
     messages = Array.isArray(messages) ? messages : [messages];
 
-    Logger.error(messages, exception.stack, `${request.method} ${request.url}`);
+    Logger.error(
+      messages,
+      (exception as any).stack,
+      `${request.method} ${request.url}`,
+    );
 
     response.status(status).json({
       statusCode: status,
