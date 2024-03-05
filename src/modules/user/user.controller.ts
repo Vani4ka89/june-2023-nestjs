@@ -1,24 +1,27 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/request/create-user.dto';
-import { UpdateUserDto } from './dto/request/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
+import { BaseUserRequestDto } from './dto/request/base-user.request.dto';
+import { UpdateUserRequestDto } from './dto/request/update-user.request.dto';
+import { UserService } from './services/user.service';
 
 @ApiTags('User')
 @Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+export class UserController {
+  constructor(private readonly usersService: UserService) {}
 
   @Post()
-  public async create(@Body() createUserDto: CreateUserDto): Promise<string> {
+  public async create(
+    @Body() createUserDto: BaseUserRequestDto,
+  ): Promise<string> {
     return await this.usersService.create(createUserDto);
   }
 
@@ -37,7 +40,7 @@ export class UsersController {
   @Patch(':id')
   public async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserRequestDto,
   ): Promise<string> {
     return await this.usersService.update(+id, updateUserDto);
   }
