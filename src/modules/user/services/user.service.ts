@@ -1,44 +1,41 @@
 import {
   ConflictException,
   Injectable,
-  Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
 
 import { CacheCustom } from '../../../common/decorators/cache-method.decorator';
+import { IUserData } from '../../auth/interfaces/user-data.interface';
 import { UserRepository } from '../../repository/services/user.repository';
-import { BaseUserRequestDto } from '../dto/request/base-user.request.dto';
-import { UpdateUserRequestDto } from '../dto/request/update-user.request.dto';
+import { UpdateUserRequestDto } from '../models/dto/request/update-user.request.dto';
+import { ResponseUserDto } from '../models/dto/response/response-user.dto';
+import { UserMapper } from './user.mapper';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  public async create(createUserDto: BaseUserRequestDto): Promise<any> {
-    Logger.log(createUserDto);
-    return 'This action adds a new user';
-  }
-
-  public async findAll(): Promise<string> {
-    return `This action returns all user`;
-  }
-
   @CacheCustom(5000)
-  public async findOne(id: number): Promise<string> {
-    `This action returns a #${id} user`;
-    throw new UnprocessableEntityException('User not found');
+  public async findMe(userData: IUserData): Promise<ResponseUserDto> {
+    const entity = await this.userRepository.findOneBy({ id: userData.userId });
+    return UserMapper.toResponseDto(entity);
   }
 
-  public async update(
-    id: number,
-    updateUserDto: UpdateUserRequestDto,
-  ): Promise<string> {
-    Logger.log(updateUserDto);
-    return `This action updates a #${id} user`;
+  public async updateMe(
+    useData: IUserData,
+    dto: UpdateUserRequestDto,
+  ): Promise<ResponseUserDto> {
+    const entity = await this.userRepository.findOneBy({ id: useData.userId });
+    await this.userRepository.save(this.userRepository.merge(entity, dto));
+    return UserMapper.toResponseDto(entity);
   }
 
-  public async remove(id: number): Promise<string> {
-    return `This action removes a #${id} user`;
+  public async getPublicUser(userId: string): Promise<ResponseUserDto> {
+    const entity = await this.userRepository.findOneBy({ id: userId });
+    if (!entity) {
+      throw new UnprocessableEntityException();
+    }
+    return UserMapper.toResponseDto(entity);
   }
 
   public async isEmailUniqueOrThrow(email: string): Promise<void> {

@@ -3,7 +3,9 @@ export class ResponseUserDto {
 
   name: string;
 
-  age: number;
+  bio: string;
 
   email: string;
+
+  image: string;
 }

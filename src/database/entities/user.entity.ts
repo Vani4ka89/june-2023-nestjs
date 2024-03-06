@@ -13,7 +13,7 @@ export class UserEntity extends BaseModel {
   @Column('text')
   name: string;
 
-  @Column('text')
+  @Column('text', { unique: true })
   email: string;
 
   @Column('text', { select: false })

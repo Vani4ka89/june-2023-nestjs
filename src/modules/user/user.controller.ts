@@ -1,16 +1,18 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
-  Patch,
-  Post,
+  ParseUUIDPipe,
+  Put,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-import { BaseUserRequestDto } from './dto/request/base-user.request.dto';
-import { UpdateUserRequestDto } from './dto/request/update-user.request.dto';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
+import { IUserData } from '../auth/interfaces/user-data.interface';
+import { UpdateUserRequestDto } from './models/dto/request/update-user.request.dto';
+import { ResponseUserDto } from './models/dto/response/response-user.dto';
 import { UserService } from './services/user.service';
 
 @ApiTags('User')
@@ -18,36 +20,28 @@ import { UserService } from './services/user.service';
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  @Post()
-  public async create(
-    @Body() createUserDto: BaseUserRequestDto,
-  ): Promise<string> {
-    return await this.usersService.create(createUserDto);
-  }
-
-  @Get()
-  public async findAll(): Promise<string> {
-    return await this.usersService.findAll();
+  @ApiBearerAuth()
+  @Get('me')
+  public async findMe(
+    @CurrentUser() userData: IUserData,
+  ): Promise<ResponseUserDto> {
+    return await this.usersService.findMe(userData);
   }
 
   @ApiBearerAuth()
+  @Put('me')
+  public async updateMe(
+    @CurrentUser() userData: IUserData,
+    @Body() dto: UpdateUserRequestDto,
+  ): Promise<ResponseUserDto> {
+    return await this.usersService.updateMe(userData, dto);
+  }
+
+  @SkipAuth()
   @Get(':id')
-  public async findOne(@Param('id') id: string): Promise<string> {
-    return await this.usersService.findOne(+id);
-  }
-
-  @ApiBearerAuth()
-  @Patch(':id')
-  public async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserRequestDto,
-  ): Promise<string> {
-    return await this.usersService.update(+id, updateUserDto);
-  }
-
-  @ApiBearerAuth()
-  @Delete(':id')
-  public async remove(@Param('id') id: string): Promise<string> {
-    return await this.usersService.remove(+id);
+  public async getPublicUser(
+    @Param('id', ParseUUIDPipe) userId: string,
+  ): Promise<ResponseUserDto> {
+    return await this.usersService.getPublicUser(userId);
   }
 }
