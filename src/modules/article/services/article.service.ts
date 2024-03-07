@@ -1,7 +1,6 @@
 import {
   ForbiddenException,
   Injectable,
-  Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
 
@@ -12,6 +11,7 @@ import { UserRepository } from '../../repository/services/user.repository';
 import { ArticleListRequestDto } from '../models/dto/request/article-list.request.dto';
 import { CreateArticleRequestDto } from '../models/dto/request/create-article.request.dto';
 import { UpdateArticleRequestDto } from '../models/dto/request/update-article.request.dto';
+import { ArticleListResponseDto } from '../models/dto/response/article-list.response.dto';
 import { ArticleResponseDto } from '../models/dto/response/article-response.dto';
 import { ArticleMapper } from './article.mapper';
 
@@ -22,16 +22,11 @@ export class ArticleService {
     private readonly articleRepository: ArticleRepository,
   ) {}
 
-  public async getArticleList(query: ArticleListRequestDto): Promise<any> {
-    const qb = this.articleRepository.createQueryBuilder('article');
-    qb.addOrderBy('article.created', 'DESC');
-    qb.take(10);
-    qb.skip(0);
-    const [entities, total] = await qb.getManyAndCount();
-    Logger.log(query);
-    return { entities, total };
-
-    // await ArticleMapper.toResponseDto();
+  public async getArticleList(
+    query: ArticleListRequestDto,
+  ): Promise<ArticleListResponseDto> {
+    const [entities, total] = await this.articleRepository.getList(query);
+    return ArticleMapper.toListResponseDto(entities, total, query);
   }
 
   public async createArticle(

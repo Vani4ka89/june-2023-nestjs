@@ -19,6 +19,7 @@ import { IUserData } from '../auth/interfaces/user-data.interface';
 import { ArticleListRequestDto } from './models/dto/request/article-list.request.dto';
 import { CreateArticleRequestDto } from './models/dto/request/create-article.request.dto';
 import { UpdateArticleRequestDto } from './models/dto/request/update-article.request.dto';
+import { ArticleListResponseDto } from './models/dto/response/article-list.response.dto';
 import { ArticleResponseDto } from './models/dto/response/article-response.dto';
 import { ArticleService } from './services/article.service';
 
@@ -31,7 +32,7 @@ export class ArticleController {
   @Get()
   public async getArticleList(
     @Query() query: ArticleListRequestDto,
-  ): Promise<ArticleResponseDto> {
+  ): Promise<ArticleListResponseDto> {
     return await this.articleService.getArticleList(query);
   }
 
