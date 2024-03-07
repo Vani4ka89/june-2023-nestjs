@@ -1,9 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
+  Post,
   Put,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -43,5 +47,24 @@ export class UserController {
     @Param('id', ParseUUIDPipe) userId: string,
   ): Promise<ResponseUserDto> {
     return await this.usersService.getPublicUser(userId);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @Post(':userId/follow')
+  public async follow(
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @CurrentUser() userData: IUserData,
+  ): Promise<void> {
+    await this.usersService.follow(userId, userData);
+  }
+
+  @ApiBearerAuth()
+  @Delete(':userId/follow')
+  public async unFollow(
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @CurrentUser() userData: IUserData,
+  ): Promise<void> {
+    await this.usersService.unFollow(userId, userData);
   }
 }
